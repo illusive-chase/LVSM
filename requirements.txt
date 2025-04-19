@@ -1,8 +1,6 @@
---extra-index-url https://download.pytorch.org/whl/cu118
-torch==2.4.1
-torchvision==0.19.1+cu118
+torchvision==0.19.1
 xformers==0.0.28
-imageio==2.9.0
+imageio>=2.9.0
 Pillow==10.0.1
 imageio-ffmpeg==0.4.2
 omegaconf==2.1.1
@@ -12,7 +10,7 @@ torchmetrics>= 0.11.0
 datasets==2.14.5
 rich>=13.3.2
 wandb==0.18.7
-opencv-python==4.5.5.64
+opencv-python==4.11.0.86
 opencv-python-headless==4.10.0.84
 ipdb
 tqdm
