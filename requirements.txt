@@ -9,7 +9,6 @@ transformers==4.30.2
 torchmetrics>=0.11.0
 datasets==2.14.5
 rich>=13.3.2
-wandb==0.18.7
 opencv-python==4.11.0.86
 opencv-python-headless==4.10.0.84
 ipdb
