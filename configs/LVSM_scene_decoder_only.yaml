@@ -30,7 +30,7 @@ training:
   checkpoint_dir: ./experiments/checkpoints/LVSM_scene_decoder_only
   checkpoint_every: 2000
   dataset_name: data.dataset_scene.Dataset
-  dataset_path: /root/data/re10k-little-reprocessed/train/full_list.txt
+  dataset_path: /mnt/bn/robotic-sim-yekai/data/re10k-little-reprocessed/train/full_list.txt
   grad_accum_steps: 1
   grad_checkpoint_every: 1
   grad_clip_norm: 1.0
@@ -64,7 +64,7 @@ training:
   wandb_exp_name: LVSM_scene_decoder_only
   wandb_log_every: 50
   
-  wandb_project: LVSM
+  wandb_project: yekai.lvsm
   warmup: 3000
   weight_decay: 0.05
 
