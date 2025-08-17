@@ -165,6 +165,10 @@ class LossComputer(nn.Module):
         if self.config.training.l2_loss_weight > 0.0:
             l2_loss = F.mse_loss(rendering, target)
 
+        l1_loss = torch.tensor(1e-8).to(rendering.device)
+        if self.config.training.l1_loss_weight > 0.0:
+            l1_loss = F.l1_loss(rendering, target)
+
         psnr = -10.0 * torch.log10(l2_loss)
 
         lpips_loss = torch.tensor(0.0).to(l2_loss.device)
@@ -181,6 +185,7 @@ class LossComputer(nn.Module):
 
         loss = (
             self.config.training.l2_loss_weight * l2_loss
+            + self.config.training.l1_loss_weight * l1_loss
             + self.config.training.lpips_loss_weight * lpips_loss
             + self.config.training.perceptual_loss_weight * perceptual_loss
         )
@@ -188,6 +193,7 @@ class LossComputer(nn.Module):
 
         loss_metrics = edict(
             loss=loss,
+            l1_loss=l1_loss,
             l2_loss=l2_loss,
             psnr=psnr,
             lpips_loss=lpips_loss,
