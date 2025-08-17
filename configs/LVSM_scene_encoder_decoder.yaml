@@ -13,26 +13,26 @@ model:
   transformer:
     d: 768
     d_head: 64
-    encoder_n_layer: 12
-    decoder_n_layer: 12
+    encoder_n_layer: 4
+    decoder_n_layer: 8
     special_init: true
     depth_init: true
     use_qk_norm: true
-    n_latent_vectors: 3072 # 3x32x32
+    n_latent_vectors: 1024 # 1x32x32
 
 training:
   amp_dtype: bf16
   api_key_path: ./configs/api_keys.yaml
-  batch_size_per_gpu: 8
+  batch_size_per_gpu: 32
   beta1: 0.9
   beta2: 0.95
   allowed_gradnorm_factor: 5
   center_crop: true
   scene_scale_factor: 1.35
-  checkpoint_dir: ./experiments/checkpoints/LVSM_scene_encoder_decoder
+  checkpoint_dir: ./experiments/checkpoints/LVSM_little
   checkpoint_every: 2000
   dataset_name: data.dataset_scene.Dataset
-  dataset_path: ./preprocessed_data/train/full_list.txt
+  dataset_path: /mnt/bn/robotic-sim-yekai/data/re10k-little-reprocessed/train/full_list.txt
   grad_accum_steps: 1
   grad_checkpoint_every: 1
   grad_clip_norm: 1.0
@@ -63,10 +63,10 @@ training:
     max_frame_dist: 192
     min_frame_dist: 25
   vis_every: 1000
-  wandb_exp_name: LVSM_scene_encoder_decoder
+  wandb_exp_name: LVSM_re10k_little_test
   wandb_log_every: 50
   
-  wandb_project: LVSM
+  wandb_project: yekai.lvsm
   warmup: 3000
   weight_decay: 0.05
 
