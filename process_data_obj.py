@@ -153,22 +153,19 @@ def generate_full_list(metadata_dir, output_file):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert Trellis dataset to LVSM RealEstate10K format.")
-    parser.add_argument("--trellis_data_dir", required=True,
-                        help="Path to the root directory of your Trellis dataset (e.g., contains scene folders).")
+    parser.add_argument("--trellis_metadata", required=True)
     # This parameter is kept for compatibility but the actual output target is hardcoded in process_trellis_scene.
     parser.add_argument("--lvsm_output_dir", required=True, 
                         help="Path to the output directory for LVSM formatted data (will create images/ and metadata/ subdirs).")
-    parser.add_argument("--num_workers", type=int, default=max(1, cpu_count() - 1),
+    parser.add_argument("--num_workers", type=int, default=32,
                         help="Number of parallel processes to use for conversion. Default is CPU cores - 1.")
     parser.add_argument("--test_split", type=float, default=0.05)
+    parser.add_argument("--chunk_size", type=int, default=10)
     args = parser.parse_args()
 
     # Discover all scene directories within the provided Trellis data directory
-    scene_dirs = [
-        os.path.join(args.trellis_data_dir, d)
-        for d in os.listdir(args.trellis_data_dir)
-        if os.path.exists(os.path.join(args.trellis_data_dir, d, 'mesh.ply'))
-    ]
+    with open(args.trellis_metadata, 'r') as f:
+        scene_dirs = json.load(f)
     split = int(len(scene_dirs) * args.test_split)
 
     for scenes, split_name in [(scene_dirs[:split], 'test'), (scene_dirs[split:], 'train')]:
@@ -178,9 +175,9 @@ if __name__ == "__main__":
         # The `if __name__ == "__main__":` block is crucial for multiprocessing on Windows.
         with Pool(processes=args.num_workers) as pool:
             # imap_unordered is used for efficient, unordered processing with a progress bar
-            for _ in tqdm(pool.imap_unordered(partial(process_trellis_scene, lvsm_output_dir=os.path.join(args.lvsm_output_dir, split_name)), scenes), 
+            for _ in tqdm(pool.imap_unordered(partial(process_trellis_scene, lvsm_output_dir=os.path.join(args.lvsm_output_dir, split_name)), scenes, chunksize=args.chunk_size), 
                         total=len(scenes), desc=f"Processing Trellis scenes for {split_name}", 
-                        unit="scene", dynamic_ncols=True):
+                        unit="scene"):
                 pass # Iterate results to update the tqdm progress bar
 
         # After all scenes are processed, generate the full_list.txt
