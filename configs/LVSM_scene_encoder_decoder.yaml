@@ -13,12 +13,12 @@ model:
   transformer:
     d: 768
     d_head: 64
-    encoder_n_layer: 4
-    decoder_n_layer: 8
+    encoder_n_layer: 8
+    decoder_n_layer: 16
     special_init: true
     depth_init: true
     use_qk_norm: true
-    n_latent_vectors: 1024 # 1x32x32
+    n_latent_vectors: 3072 # 3x32x32
 
 training:
   amp_dtype: bf16
