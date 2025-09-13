@@ -19,6 +19,8 @@ class Dataset(Dataset):
             with open(self.config.training.dataset_path, 'r') as f:
                 self.all_scene_paths = f.read().splitlines()
             self.all_scene_paths = [path for path in self.all_scene_paths if path.strip()]
+            dataset_split = self.config.training.get('dataset_split', 1)
+            self.all_scene_paths = self.all_scene_paths[:int(len(self.all_scene_paths)*dataset_split)]
         
         except Exception as e:
             print(f"Error reading dataset paths from '{self.config.training.dataset_path}'")
