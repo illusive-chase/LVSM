@@ -4,11 +4,20 @@ import os
 import sys
 import multiprocessing as mp
 from tqdm import tqdm
+from PIL import Image
+import numpy as np
 
 def func(scene_path):
     data_json = json.load(open(scene_path, 'r'))
     frames = data_json["frames"]
-    valid_cnt = sum([int(os.path.exists(frame['image_path'])) for frame in frames])
+    valid_cnt = 0
+    for frame in frames:
+        try:
+            img = np.array(Image.open(frame['image_path']))
+            assert img.shape == (256, 256, 3)
+        except Exception:
+            continue
+        valid_cnt += 1
     descs = []
     if valid_cnt != len(frames):
         desc = f'invalid image_path: {scene_path} ({valid_cnt}/{len(frames)})\n'
