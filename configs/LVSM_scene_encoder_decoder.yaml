@@ -77,6 +77,7 @@ training:
 inference:
   if_inference: False
   compute_metrics: False
+  save_images: False
   view_idx_file_path: ./data/evaluation_index_re10k.json
   render_video: False
   render_video_config:
