@@ -19,6 +19,8 @@ class Dataset(Dataset):
             with open(self.config.training.dataset_path, 'r') as f:
                 self.all_scene_paths = f.read().splitlines()
             self.all_scene_paths = [path for path in self.all_scene_paths if path.strip()]
+            dataset_split = self.config.training.get('dataset_split', 1.0)
+            self.all_scene_paths = self.all_scene_paths[:int(len(self.all_scene_paths)*dataset_split)]
         
         except Exception as e:
             print(f"Error reading dataset paths from '{self.config.training.dataset_path}'")
@@ -132,19 +134,7 @@ class Dataset(Dataset):
         if len(frames) < self.config.training.num_views:
             return None
         # sample view candidates
-        view_selector_config = self.config.training.view_selector
-        min_frame_dist = view_selector_config.get("min_frame_dist", 25)
-        max_frame_dist = min(len(frames) - 1, view_selector_config.get("max_frame_dist", 100))
-        if max_frame_dist <= min_frame_dist:
-            return None
-        frame_dist = random.randint(min_frame_dist, max_frame_dist)
-        if len(frames) <= frame_dist:
-            return None
-        start_frame = random.randint(0, len(frames) - frame_dist - 1)
-        end_frame = start_frame + frame_dist
-        sampled_frames = random.sample(range(start_frame + 1, end_frame), self.config.training.num_views-2)
-        image_indices = [start_frame, end_frame] + sampled_frames
-        return image_indices
+        return random.sample(range(0, len(frames)), self.config.training.num_views)
 
     def __getitem__(self, idx):
         # try:
@@ -174,8 +164,8 @@ class Dataset(Dataset):
 
 
         # centerize and scale the poses (for unbounded scenes)
-        scene_scale_factor = self.config.training.get("scene_scale_factor", 1.35)
-        input_c2ws = self.preprocess_poses(input_c2ws, scene_scale_factor)
+        # scene_scale_factor = self.config.training.get("scene_scale_factor", 1.35)
+        # input_c2ws = self.preprocess_poses(input_c2ws, scene_scale_factor)
 
         image_indices = torch.tensor(image_indices).long().unsqueeze(-1)  # [v, 1]
         scene_indices = torch.full_like(image_indices, idx)  # [v, 1]
