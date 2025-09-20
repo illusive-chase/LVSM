@@ -118,7 +118,8 @@ def compute_ssim(
 def export_results(
     result: edict,
     out_dir: str, 
-    compute_metrics: bool = False
+    compute_metrics: bool = False,
+    render_images: bool = False
 ):
     """
     Save results including images and optional metrics and videos.
@@ -141,8 +142,9 @@ def export_results(
         # Get target view indices
         target_indices = target_data.index[batch_idx, :, 0].cpu().numpy()
         
-        # Save images
-        _save_images(result, batch_idx, sample_dir)
+        if render_images:
+            # Save images
+            _save_images(result, batch_idx, sample_dir)
         
         # Compute and save metrics if requested
         if compute_metrics:
