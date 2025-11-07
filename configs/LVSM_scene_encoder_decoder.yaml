@@ -13,8 +13,8 @@ model:
   transformer:
     d: 768
     d_head: 64
-    encoder_n_layer: 8
-    decoder_n_layer: 16
+    encoder_n_layer: 12
+    decoder_n_layer: 12
     special_init: true
     depth_init: true
     use_qk_norm: true
@@ -23,7 +23,7 @@ model:
 training:
   amp_dtype: bf16
   api_key_path: ./configs/api_keys.yaml
-  batch_size_per_gpu: 32
+  batch_size_per_gpu: 16
   beta1: 0.9
   beta2: 0.95
   allowed_gradnorm_factor: 5
